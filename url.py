@@ -16,6 +16,10 @@ html=page.read()
 #返回服务器响应码
 print(page.getcode())
 
+#返回实际数据的url 防止重定向问题
+print(page.geturl())
 
+#返回服务器响应的报头信息
+print(page.info())
 
 #print(html)
