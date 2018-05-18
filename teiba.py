@@ -39,7 +39,7 @@ def load_page(fullurl, file_name):
     fulluel:操作url
     file_name:需要保存的文件名
     '''
-    print("正在下载" + file_name)
+    print("正在下载 " + file_name)
     request = urllib2.Request(fullurl)
     request.add_header("User-Agent", user_agent())
     response = urllib2.urlopen(request)
@@ -51,10 +51,10 @@ def save_page(html, file_name):
     html:爬取的页面内容
     file_name:保存到的页面
     '''
-    print("正在保存" + file_name)
+    print("正在保存 " + file_name)
     with open(file_name, "w") as f:
         f.write(html)
-    print("-" * 30)
+    print("-" * 20)
 
 
 def tieba_spider(url, key_word, sta_page, end_page):
@@ -85,5 +85,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
