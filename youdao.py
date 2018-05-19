@@ -28,29 +28,32 @@ def user_agent():
     user_agent = random.choice(user_agent_list)
     return user_agent
 
-key = raw_input("输入查询单词：")
+def search(key):
+    post = {
+    "i": key,
+    "from":"AUTO",
+    "to":"AUTO",
+    "smartresult":"dict",
+    "client":"fanyideskweb",
+    "salt":"1526716403204",
+    "sign":"1d5e66c6be653ecfa76f4d2d05116508",
+    "doctype":"json",
+    "version":"2.1",
+    "keyfrom":"fanyi.web",
+    "action":"FY_BY_REALTIME",
+    "typoResult":"true",
+    }
+    post = urllib.urlencode(post)
+    url = "http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule"
+    request = urllib2.Request(url,data = post)
+    request.add_header("User-Agent",user_agent())
+    response = urllib2.urlopen(request)
+    return response.read()
 
-post = {
-"i": key,
-"from":"AUTO",
-"to":"AUTO",
-"smartresult":"dict",
-"client":"fanyideskweb",
-"salt":"1526716403204",
-"sign":"1d5e66c6be653ecfa76f4d2d05116508",
-"doctype=json&version":"2.1",
-"keyfrom":"fanyi.web",
-"action":"FY_BY_REALTIME",
-"typoResult":"false",
-}
+def main():
+    key = raw_input("输入查询单词：")
+    result = search(key)
+    print(result['translateResult'])
 
-post = urllib.urlencode(post)
-
-url = "http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule"
-
-request = urllib2.Request(url)
-request.add_header("User-Agent",user_agent())
-
-response = request.urlopen(request)
-
-print(response.read())
+if __name__ == '__main__':
+    main()
