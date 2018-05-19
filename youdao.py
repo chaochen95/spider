@@ -29,6 +29,7 @@ def user_agent():
     return user_agent
 
 def search(key):
+    #需要post的数据
     post = {
     "i": key,
     "from":"AUTO",
@@ -45,6 +46,7 @@ def search(key):
     }
     post = urllib.urlencode(post)
     url = "http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule"
+    #调用urllib2.Request()方法 datae为传输的post数据
     request = urllib2.Request(url,data = post)
     request.add_header("User-Agent",user_agent())
     response = urllib2.urlopen(request)
@@ -52,8 +54,10 @@ def search(key):
 
 def main():
     key = raw_input("输入查询单词：")
-    result = search(key)
-    print(result['translateResult'])
+    #eval()把返回的str转为dict
+    result = eval(search(key))
+    #获取dictkey对应的值使用get("key")方法
+    print(result.get("translateResult")[0][0].get("tgt"))
 
 if __name__ == '__main__':
     main()
