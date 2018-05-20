@@ -27,3 +27,24 @@ def user_agent():
            ]
     user_agent = random.choice(user_agent_list)
     return user_agent
+
+def search(key):
+    #需要post的数据
+    post = {
+    "page_limit":"20",
+    "page_start": key
+    }
+    post = urllib.urlencode(post)
+    url = "https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend"
+    #调用urllib2.Request()方法 datae为传输的post数据
+    request = urllib2.Request(url,data = post)
+    request.add_header("User-Agent",user_agent())
+    response = urllib2.urlopen(request)
+    return response.read()
+
+def main():
+    key = raw_input("起始页：")
+    print(search(key))
+
+if __name__ == '__main__':
+    main()
