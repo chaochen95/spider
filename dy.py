@@ -36,7 +36,7 @@ def search():
     "page_start": key
     }'''
     #post = urllib.urlencode(post)
-    url = "https://www.douyin.com/share/video/6536877257548369155"
+    url = raw_input("输入需要去水印的分享链接：")
     #调用urllib2.Request()方法 datae为传输的post数据
     request = urllib2.Request(url)
     request.add_header("User-Agent",user_agent())
@@ -47,8 +47,9 @@ def main():
     html = search()
     #pattern = re.compile('"play_addr":{"url_list":[(.*?),',re.S)
     #content = pattern.findall(html)
-    #content = re.match('video_id=(.*?)\u',html)
-    print(html)
-
+    content = re.findall('video_id=(.*?)\\\\u0026',html)
+    video_id =content[0]
+    url = "https://aweme.snssdk.com/aweme/v1/play/?video_id=" + video_id + "&line=0"
+    print(url)
 if __name__ == '__main__':
     main()
