@@ -45,13 +45,15 @@ class Spiderdy2018(object):
         request.add_header("User-Agent", user_agent())
         response = urllib2.urlopen(request)
         html = response.read()
-        print(html)
+        html = html.decode('GB2312', errors='ignore').encode('utf-8')
+        #html = html.encode("utf8")
+        #print(html)
         return html
 
     def deal_page(self, html):
-        pattern = re.compile('<tbody>(.*?)</tbody>')
+        pattern = re.compile('<b>(.*?)</b>', re.S)
         m = pattern.findall(html)
-        print(m)
+        print(m[0])
 
     def start(self, page):
         html = self.load_page(page)
