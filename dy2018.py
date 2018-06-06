@@ -3,6 +3,7 @@ import urllib2
 import urllib
 import random
 import re
+import json
 
 def user_agent():
     #反爬虫
@@ -53,8 +54,23 @@ class Spiderdy2018(object):
     def deal_page(self, html):
         pattern = re.compile('<b>(.*?)</b>', re.S)
         m = pattern.findall(html)
-        print(m[0])
-
+        #print(m[0])
+        for x in m:
+            #print(x)
+            pattern = re.compile('href="(.*?)"', re.S)
+            pattern2 = re.compile('>(.*?)<', re.S)
+            m2 = pattern.findall(x)
+            m3 = pattern2.findall(x)
+            m2 = "https://www.dy2018.com" + ''.join(m2)
+            m3 = ''.join(m3)
+            list1 = [m3, m2]
+            for x in list1:
+                print(x)
+            #m3.append(m2)
+            #print(m3)
+            #print (json.dumps.(m3).decode("unicode-escape"))
+            #dic = zip(m3, m2)
+            #print(dic)
     def start(self, page):
         html = self.load_page(page)
         self.deal_page(html)
