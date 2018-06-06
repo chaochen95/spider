@@ -66,6 +66,7 @@ class Spiderdy2018(object):
             list1 = [m3, m2]
             for x in list1:
                 print(x)
+            print("-"*30)
             #m3.append(m2)
             #print(m3)
             #print (json.dumps.(m3).decode("unicode-escape"))
@@ -77,7 +78,8 @@ class Spiderdy2018(object):
 
 def main():
     spider = Spiderdy2018()
-    spider.start(1)
+    page = input("需要爬取的页码：")
+    spider.start(page)
 
 if __name__ == '__main__':
     main()
