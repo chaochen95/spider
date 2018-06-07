@@ -3,7 +3,8 @@ import urllib2
 import urllib
 import random
 import re
-from lxml import etree
+import ssl
+#from lxml import etree
 
 def user_agent():
     #反爬虫
@@ -38,9 +39,9 @@ class Spiderdy2018(object):
 
     def load_page(self, page):
         if page == 1:
-            url = "http://www.dy2018.com/html/gndy/dyzz/index.html"
+            url = "https://www.dy2018.com/html/gndy/dyzz/index.html"
         else:
-            url = "http://www.dy2018.com/html/gndy/dyzz/index_" + str(page) + ".html"
+            url = "https://www.dy2018.com/html/gndy/dyzz/index_" + str(page) + ".html"
 
         request = urllib2.Request(url)
         request.add_header("User-Agent", user_agent())
@@ -61,22 +62,28 @@ class Spiderdy2018(object):
             pattern2 = re.compile('>(.*?)<', re.S)
             m2 = pattern.findall(x)
             m3 = pattern2.findall(x)
-            m2 = "http://www.dy2018.com" + ''.join(m2)
+            m2 = "https://www.dy2018.com" + ''.join(m2)
             m3 = ''.join(m3)
 
             #提取下载地址
-            url = m2
-            request = urllib2.Request(url)
+            ssl._create_default_https_context = ssl._create_unverified_context
+            request = urllib2.Request(m2)
             request.add_header("User-Agent", user_agent())
             response = urllib2.urlopen(request)
-            html = response.read().decode('GB2312', errors='ignore').encode('utf-8')            
-            content = etree.HTML(html)
-            link_list = content.xpath('//a[@target="_self"]/@thunderhref')
-            
+            html2 = response.read().decode('GB2312', errors='ignore').encode('utf-8')            
+            #content = etree.HTML(html2)
+            #link_list = content.xpath('//a[@target="_self"]/@thunderhref')
+            pattern3 = re.compile('"#fdfddf"><a href="(.*?)"', re.S)
+            m4 = pattern3.findall(html2)
+            #print(m4)
+            if m4:
+                m5 = []
+                for i in m4:
+                    if not i in m5: 
+                        m5.append(i)
+                list1 = [m3, m2]
 
-            
-            list1 = [m3, m2]
-            list2 = list1.extend(link_list)
+                list1.extend(m5)
             for x in list1:
                 print(x)
             print("-"*30)
@@ -90,6 +97,7 @@ class Spiderdy2018(object):
         self.deal_page(html)
 
 def main():
+
     spider = Spiderdy2018()
     page = input("需要爬取的页码：")
     spider.start(page)
