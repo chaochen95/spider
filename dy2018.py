@@ -1,9 +1,12 @@
 # -*- coding: UTF-8 -*-
-import urllib2
-import urllib
+#import urllib2
+#import urllib
 import random
 import re
 import ssl
+import requests
+import time
+
 #from lxml import etree
 
 def user_agent():
@@ -38,16 +41,18 @@ class Spiderdy2018(object):
         #self.arg = arg
 
     def load_page(self, page):
+        ssl._create_default_https_context = ssl._create_unverified_context
         if page == 1:
             url = "https://www.dy2018.com/html/gndy/dyzz/index.html"
         else:
             url = "https://www.dy2018.com/html/gndy/dyzz/index_" + str(page) + ".html"
 
-        request = urllib2.Request(url)
-        request.add_header("User-Agent", user_agent())
-        response = urllib2.urlopen(request)
-        html = response.read()
-        html = html.decode('GB2312', errors='ignore').encode('utf-8')
+        headers = {}
+        headers['User-Agent'] = user_agent()
+        response = requests.get(url, headers=headers,timeout=30)
+        response.encoding = 'GB2312'
+        html = response.text
+        #html = html.decode('GB2312', errors='ignore').encode('utf-8')
         #html = html.encode("utf8")
         #print(html)
         return html
@@ -66,7 +71,7 @@ class Spiderdy2018(object):
             m3 = ''.join(m3)
 
             #提取下载地址
-            ssl._create_default_https_context = ssl._create_unverified_context
+            '''ssl._create_default_https_context = ssl._create_unverified_context
             request = urllib2.Request(m2)
             request.add_header("User-Agent", user_agent())
             response = urllib2.urlopen(request)
@@ -83,21 +88,51 @@ class Spiderdy2018(object):
                         m5.append(i)
                 list1 = [m3, m2]
 
+                list1.extend(m5)'''
+            #ssl._create_default_https_context = ssl._create_unverified_context
+            m4 = self.load_deep(m2)
+            #print(m4)
+            if m4:
+                m5 = []
+                for i in m4:
+                    if not i in m5: 
+                        m5.append(i)
+                list1 = [m3, m2]
+                #list1 = [m3, m2]
                 list1.extend(m5)
+            
             for x in list1:
                 print(x)
+                print("*"*3)
             print("-"*30)
+            print('\n')
             #m3.append(m2)
             #print(m3)
             #print (json.dumps.(m3).decode("unicode-escape"))
             #dic = zip(m3, m2)
             #print(dic)
+
+    def load_deep(self, html):
+        ssl._create_default_https_context = ssl._create_unverified_context
+        headers = {}
+        headers['User-Agent'] = user_agent()
+        
+        response = requests.get(html, headers=headers, timeout=30)
+        response.encoding = 'GB2312'
+        html2 = response.text
+                #html2 = html2.decode('GB2312', errors='ignore')
+        #print(html2)
+        pattern3 = re.compile('"#fdfddf"><a href="(.*?)"', re.S)
+        m4 = pattern3.findall(html2)
+        time.sleep(1)
+        return m4
+
     def start(self, page):
         html = self.load_page(page)
         self.deal_page(html)
 
 def main():
-
+    ssl._create_default_https_context = ssl._create_unverified_context
     spider = Spiderdy2018()
     page = input("需要爬取的页码：")
     spider.start(page)
