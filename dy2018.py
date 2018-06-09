@@ -6,7 +6,7 @@ import re
 import ssl
 import requests
 import time
-
+from retrying import retry
 #from lxml import etree
 
 def user_agent():
@@ -40,9 +40,10 @@ class Spiderdy2018(object):
         super(Spiderdy2018, self).__init__()
         #self.arg = arg
 
+    @retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
     def load_page(self, page):
         ssl._create_default_https_context = ssl._create_unverified_context
-        if page == 1:
+        if (int(page) == 1):
             url = "https://www.dy2018.com/html/gndy/dyzz/index.html"
         else:
             url = "https://www.dy2018.com/html/gndy/dyzz/index_" + str(page) + ".html"
@@ -84,7 +85,7 @@ class Spiderdy2018(object):
             if m4:
                 m5 = []
                 for i in m4:
-                    if not i in m5: 
+                    if not i in m5:
                         m5.append(i)
                 list1 = [m3, m2]
 
@@ -112,25 +113,31 @@ class Spiderdy2018(object):
             #dic = zip(m3, m2)
             #print(dic)
 
+    @retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
     def load_deep(self, html):
         ssl._create_default_https_context = ssl._create_unverified_context
         headers = {}
         headers['User-Agent'] = user_agent()
+
+
+        response = requests.get(html, headers=headers)
+        response.keep_alive = False
+       
         
-        response = requests.get(html, headers=headers, timeout=30)
         response.encoding = 'GB2312'
         html2 = response.text
                 #html2 = html2.decode('GB2312', errors='ignore')
         #print(html2)
         pattern3 = re.compile('"#fdfddf"><a href="(.*?)"', re.S)
         m4 = pattern3.findall(html2)
-        time.sleep(1)
+        time.sleep(1.5)
         return m4
 
     def start(self, page):
         html = self.load_page(page)
         self.deal_page(html)
 
+@retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
 def main():
     ssl._create_default_https_context = ssl._create_unverified_context
     spider = Spiderdy2018()
