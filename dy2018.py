@@ -40,7 +40,7 @@ class Spiderdy2018(object):
         super(Spiderdy2018, self).__init__()
         #self.arg = arg
 
-    @retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
+    #@retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
     def load_page(self, page):
         ssl._create_default_https_context = ssl._create_unverified_context
         if (int(page) == 1):
@@ -137,7 +137,7 @@ class Spiderdy2018(object):
         html = self.load_page(page)
         self.deal_page(html)
 
-@retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
+#@retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
 def main():
     ssl._create_default_https_context = ssl._create_unverified_context
     spider = Spiderdy2018()
