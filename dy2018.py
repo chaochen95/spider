@@ -113,17 +113,13 @@ class Spiderdy2018(object):
             #dic = zip(m3, m2)
             #print(dic)
 
-    @retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
+
     def load_deep(self, html):
         ssl._create_default_https_context = ssl._create_unverified_context
         headers = {}
         headers['User-Agent'] = user_agent()
-
-
         response = requests.get(html, headers=headers)
         response.keep_alive = False
-       
-        
         response.encoding = 'GB2312'
         html2 = response.text
                 #html2 = html2.decode('GB2312', errors='ignore')
@@ -137,7 +133,7 @@ class Spiderdy2018(object):
         html = self.load_page(page)
         self.deal_page(html)
 
-#@retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
+@retry(stop_max_attempt_number=7, wait_fixed=2000, stop_max_delay=10000)
 def main():
     ssl._create_default_https_context = ssl._create_unverified_context
     spider = Spiderdy2018()
